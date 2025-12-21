@@ -3483,116 +3483,51 @@ NatHub_MODULES[NatHub["3e"]] = {
 					return Code
 				end
 
+				function Tab:Paragraph(data)
+					local Paragraph = {
+						Title = data.Title,
+						Desc = data.Desc,
+						RichText = data.RichText or false,
+					}
 
-function Tab:Paragraph(data)
-    local Paragraph = {
-        Title = data.Title,
-        Desc = data.Desc,
-        Icon = data.Icon,
-        RichText = data.RichText or false,
-    }
+					local newParagraph = Templates.Paragraph:Clone()
+					newParagraph.Name = Paragraph.Title
+					newParagraph.Parent = parentElement
+					newParagraph.Title.Text = Paragraph.Title
 
-    local newParagraph = Templates.Paragraph:Clone()
-    newParagraph.Name = Paragraph.Title
-    newParagraph.Parent = parentElement
-    newParagraph.Title.Text = Paragraph.Title
+					if Paragraph.Desc and Paragraph.Desc ~= "" then
+						newParagraph.Description.Text = Paragraph.Desc
+						newParagraph.Description.Visible = true
+					else
+						newParagraph.Description.Visible = false
+					end
 
-    if Paragraph.Icon then
-        local iconImage = Instance.new("ImageLabel")
-        iconImage.Name = "Icon"
-        iconImage.BackgroundTransparency = 1
-        iconImage.Size = UDim2.new(0, 20, 0, 20)
-        iconImage.AnchorPoint = Vector2.new(0, 0.5)
-        iconImage.Position = UDim2.new(0, 0, 0.5, 0)
-        iconImage.ImageColor3 = Color3.fromRGB(255, 255, 255)
-        
-        if not Paragraph.Icon:find("rbxassetid") then
-            iconImage.Image = IconModule.Icon(Paragraph.Icon)[1] or Paragraph.Icon or ""
-            iconImage.ImageRectOffset = IconModule.Icon(Paragraph.Icon)[2].ImageRectPosition or Vector2.new(0,0)
-            iconImage.ImageRectSize = IconModule.Icon(Paragraph.Icon)[2].ImageRectSize or Vector2.new(0,0)
-        else
-            iconImage.Image = Paragraph.Icon
-        end
-        
-        iconImage.Parent = newParagraph.Title
-        
-        local titlePadding = Instance.new("UIPadding")
-        titlePadding.PaddingLeft = UDim.new(0, 25)
-        titlePadding.Parent = newParagraph.Title
-    end
+					newParagraph.Title.RichText = Paragraph.RichText
+					newParagraph.Description.RichText = Paragraph.RichText
 
-    if Paragraph.Desc and Paragraph.Desc ~= "" then
-        newParagraph.Description.Text = Paragraph.Desc
-        newParagraph.Description.Visible = true
-    else
-        newParagraph.Description.Visible = false
-    end
+					newParagraph.Visible = true
 
-    newParagraph.Title.RichText = Paragraph.RichText
-    newParagraph.Description.RichText = Paragraph.RichText
+					function Paragraph:SetTitle(title)
+						Paragraph.Title = title
+						newParagraph.Title.Text = title
+					end
 
-    newParagraph.Visible = true
+					function Paragraph:SetDesc(desc)
+						Paragraph.Desc = desc
+						newParagraph.Description.Text = desc
+						if desc ~= "" then
+							newParagraph.Visible = true
+						else
+							newParagraph.Visible = false
+						end
+					end
 
-    function Paragraph:SetTitle(title)
-        Paragraph.Title = title
-        newParagraph.Title.Text = title
-    end
+					function Paragraph:Destroy()
+						newParagraph:Destroy()
+					end
 
-    function Paragraph:SetDesc(desc)
-        Paragraph.Desc = desc
-        newParagraph.Description.Text = desc
-        if desc ~= "" then
-            newParagraph.Description.Visible = true
-        else
-            newParagraph.Description.Visible = false
-        end
-    end
-    
-    function Paragraph:SetIcon(icon)
-        Paragraph.Icon = icon
-        local iconImage = newParagraph.Title:FindFirstChild("Icon")
-        
-        if icon then
-            if not iconImage then
-                iconImage = Instance.new("ImageLabel")
-                iconImage.Name = "Icon"
-                iconImage.BackgroundTransparency = 1
-                iconImage.Size = UDim2.new(0, 20, 0, 20)
-                iconImage.AnchorPoint = Vector2.new(0, 0.5)
-                iconImage.Position = UDim2.new(0, 0, 0.5, 0)
-                iconImage.ImageColor3 = Color3.fromRGB(255, 255, 255)
-                iconImage.Parent = newParagraph.Title
-                
-                local titlePadding = Instance.new("UIPadding")
-                titlePadding.PaddingLeft = UDim.new(0, 25)
-                titlePadding.Parent = newParagraph.Title
-            end
-            
-            if not icon:find("rbxassetid") then
-                iconImage.Image = IconModule.Icon(icon)[1] or icon or ""
-                iconImage.ImageRectOffset = IconModule.Icon(icon)[2].ImageRectPosition or Vector2.new(0,0)
-                iconImage.ImageRectSize = IconModule.Icon(icon)[2].ImageRectSize or Vector2.new(0,0)
-            else
-                iconImage.Image = icon
-            end
-        else
-            if iconImage then
-                iconImage:Destroy()
-                local padding = newParagraph.Title:FindFirstChild("UIPadding")
-                if padding then
-                    padding:Destroy()
-                end
-            end
-        end
-    end
-
-    function Paragraph:Destroy()
-        newParagraph:Destroy()
-    end
-
-    return Paragraph
-end
-
+					return Paragraph
+				end
 
 
 				function Tab:Colorpicker()
@@ -4793,7 +4728,7 @@ end
       local OnOpenCallback = function() end
       local OnCloseCallback = function() end
       local OnDestroyCallback = function() end
-      function Window:OnOpen(func)
+      function Windo:OnOpen(func)
         if type(func) ~= "function" then return end
         OnOpenCallback = func or OnOpenCallback
       end
